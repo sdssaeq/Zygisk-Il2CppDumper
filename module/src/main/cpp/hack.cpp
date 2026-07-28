@@ -20,17 +20,27 @@ static int GetAndroidApiLevel() {
 
 void hack_start(const char *game_data_dir) {
     bool load = false;
+
     for (int i = 0; i < 10; i++) {
         void *handle = xdl_open("libil2cpp.so", 0);
+
         if (handle) {
             load = true;
+
             il2cpp_api_init(handle);
+
+            LOGI("Waiting 180 seconds for gameplay assemblies...");
+            sleep(180);
+
+            LOGI("Starting delayed IL2CPP dump...");
             il2cpp_dump(game_data_dir);
+
             break;
         } else {
             sleep(1);
         }
     }
+
     if (!load) {
         LOGI("libil2cpp.so not found in thread %d", gettid());
     }
