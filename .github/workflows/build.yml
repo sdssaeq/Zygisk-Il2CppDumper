@@ -7,6 +7,11 @@ on:
         description: "Package name of the game:"
         required: true
         type: string
+      module_name:
+        description: "Target library/module name:"
+        required: true
+        default: "libil2cpp.so"
+        type: string
 
 jobs:
   build:
@@ -43,6 +48,7 @@ jobs:
       - name: Build module
         env:
           PACKAGE_NAME: ${{ inputs.package_name }}
+          MODULE_NAME: ${{ inputs.module_name }}
         run: |
           set -euo pipefail
 
@@ -53,12 +59,21 @@ jobs:
 
           chmod +x ./gradlew
 
+          if [[ ! "$MODULE_NAME" =~ ^[A-Za-z0-9_][A-Za-z0-9_.-]*\.so$ ]]; then
+            echo "Invalid library name (expected a .so filename): $MODULE_NAME"
+            exit 1
+          fi
+
           sed -i \
             "s|moduleDescription = \"|moduleDescription = \"(${PACKAGE_NAME}) |g" \
             module.gradle
 
           sed -i \
             "s|com\.game\.packagename|${PACKAGE_NAME}|g" \
+            module/src/main/cpp/game.h
+
+          sed -i \
+            "s|libil2cpp\.so|${MODULE_NAME}|g" \
             module/src/main/cpp/game.h
 
           ./gradlew :module:assembleRelease --stacktrace
