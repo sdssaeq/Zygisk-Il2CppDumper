@@ -3,6 +3,7 @@
 //
 
 #include "hack.h"
+#include "game.h"
 #include <cstring>
 #include <cstdio>
 #include <unistd.h>
@@ -22,7 +23,7 @@ void hack_start(const char *game_data_dir) {
     bool load = false;
 
     for (int i = 0; i < 10; i++) {
-        void *handle = xdl_open("libil2cpp.so", 0);
+        void *handle = xdl_open(GameLibraryName, 0);
 
         if (handle) {
             load = true;
@@ -42,7 +43,7 @@ void hack_start(const char *game_data_dir) {
     }
 
     if (!load) {
-        LOGI("libil2cpp.so not found in thread %d", gettid());
+        LOGI("%s not found in thread %d", GameLibraryName, gettid());
     }
 }
 

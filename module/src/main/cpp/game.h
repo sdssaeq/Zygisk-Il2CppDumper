@@ -6,5 +6,6 @@
 #define ZYGISK_IL2CPPDUMPER_GAME_H
 
 #define GamePackageName "com.game.packagename"
+#define GameLibraryName "libil2cpp.so"
 
 #endif //ZYGISK_IL2CPPDUMPER_GAME_H
